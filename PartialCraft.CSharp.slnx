@@ -1,3 +1,10 @@
 <Solution>
-  <Project Path="PartialCraft.CSharp.csproj" />
+  <Folder Name="/Samples/" />
+  <Folder Name="/Samples/INPC/">
+    <Project Path="Samples/INPC/INPCDemo/INPCDemo.csproj" Id="7f86b4b5-f60a-42c5-9e9b-a64b7dd392d4" />
+    <Project Path="Samples/INPC/INPCGenerator/INPCGenerator.csproj" Id="66c46a51-cd45-4ebd-954a-59084f373efb" />
+  </Folder>
+  <Folder Name="/Src/">
+    <Project Path="Src/PartialCraft.CSharp.csproj" />
+  </Folder>
 </Solution>

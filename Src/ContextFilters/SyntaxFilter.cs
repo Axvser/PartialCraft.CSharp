@@ -26,7 +26,7 @@ public class SyntaxFilter<TSyntax, TSymbol> : IContextFilter<Tuple<ICodeWeaver<T
     public virtual bool Filter(TSyntax? node, CancellationToken token)
     {
         if (node is null) return false;
-        return node.IsPartial() && (OnFilter?.Invoke(node) ?? false);
+        return node.IsPartial() && (OnFilter?.Invoke(node) ?? true);
     }
 
     public virtual TSyntax Transform(GeneratorSyntaxContext context, CancellationToken token)

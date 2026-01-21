@@ -8,7 +8,7 @@ using System.Text;
 
 namespace PartialCraft.CSharp.CodeWeavers;
 
-public abstract class ClassWeaverCore : ICodeWeaver<ClassDeclarationSyntax, INamedTypeSymbol>
+public abstract class ClassEntry : ICodeWeaver<ClassDeclarationSyntax, INamedTypeSymbol>
 {
     public ClassDeclarationSyntax? Syntax { get; protected set; }
     public INamedTypeSymbol? Symbol { get; protected set; }

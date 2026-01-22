@@ -1,6 +1,9 @@
 ﻿namespace INPCDemo;
 
-public partial class MainViewModel
+public partial class GlobalViewModel
 {
-    private string _title = "INPC Demo";
+    public partial class MainViewModel
+    {
+        private string _title = "INPC Demo";
+    }
 }

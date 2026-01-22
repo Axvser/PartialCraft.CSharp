@@ -1,9 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
-using PartialCraft.CSharp;
 using PartialCraft.CSharp.CodeWeavers;
 using System.Collections.Generic;
 
-namespace INPCGenerator;
+namespace PartialCraft.CSharp;
 
 public class INPCWeaver : ClassEntry
 {
@@ -30,18 +29,16 @@ public class INPCWeaver : ClassEntry
 
     public override string GetFileName()
     {
-        return $"{Symbol!.Name}.INPC.g.cs";
+        return $"{Symbol!.Name}_INPC.g.cs";
     }
 
     protected override string[] GenerateBaseInterfaces()
-    {
-        return ["System.ComponentModel.INotifyPropertyChanged"];
-    }
+        => [
+            "System.ComponentModel.INotifyPropertyChanged",
+           ];
 
-    protected override string[] GenerateBaseTypes()
-    {
-        return [];
-    }
+    protected override string[] GenerateBaseTypes() 
+        => [];
 
     protected override string GenerateBody(int depth)
     {
@@ -94,7 +91,6 @@ public class INPCWeaver : ClassEntry
 
             builder.PopIndent();
             builder.AppendLine("}");
-            builder.AppendLine();
         }
 
         return builder.ToString();

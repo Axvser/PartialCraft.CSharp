@@ -1,14 +1,17 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using PartialCraft.CSharp;
 
-namespace INPCGenerator;
+namespace PartialCraft.CSharp;
 
 [Generator(LanguageNames.CSharp)]
 public class INPCGenerator : IncrementalCore<ClassDeclarationSyntax, INamedTypeSymbol>
 {
     public INPCGenerator()
     {
-        Weavers.Add(new INPCWeaver());
+        var inpc = new INPCWeaver();
+
+        inpc.SyntaxFilter.OnFilter = (cls) => cls.Identifier.Text.Contains("ViewModel");
+
+        Weavers.Add(inpc);
     }
 }

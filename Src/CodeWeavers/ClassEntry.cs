@@ -28,10 +28,8 @@ public abstract class ClassEntry : ICodeWeaver<ClassDeclarationSyntax, INamedTyp
             parent = parent.Parent;
         }
     }
-    public abstract string GetFileName();
-    public abstract bool CanWeave();
-    public virtual Encoding GetEncoding() => Encoding.UTF8;
-    public string Weave()
+    
+    public virtual string Weave()
     {
         if (Syntax == null || Symbol == null) return string.Empty;
 
@@ -43,15 +41,9 @@ public abstract class ClassEntry : ICodeWeaver<ClassDeclarationSyntax, INamedTyp
         sourceBuilder.AppendLine("#nullable enable");
         sourceBuilder.AppendLine();
 
-        int currentClassDepth = OuterClasses?.Count ?? 0;
+        int currentClassDepth = 0;
 
-        if (OuterClasses == null || OuterClasses.Count == 0)
-        {
-            sourceBuilder.AppendLine($"namespace {Symbol.ContainingNamespace};");
-            sourceBuilder.AppendLine();
-        }
-
-        if (OuterClasses != null && OuterClasses.Count > 0)
+        if (OuterClasses.Count > 0)
         {
             sourceBuilder.AppendLine($"namespace {Symbol.ContainingNamespace};");
             sourceBuilder.AppendLine();
@@ -61,7 +53,7 @@ public abstract class ClassEntry : ICodeWeaver<ClassDeclarationSyntax, INamedTyp
                 var outerClass = OuterClasses[i];
                 var modifiers = outerClass.Modifiers.ToString();
 
-                sourceBuilder.AppendIndentedLine(currentClassDepth, $"{modifiers}class {outerClass.Identifier.Text}");
+                sourceBuilder.AppendIndentedLine(currentClassDepth, $"{modifiers} class {outerClass.Identifier.Text}");
                 sourceBuilder.AppendIndentedLine(currentClassDepth, "{");
 
                 currentIndentLevel++;
@@ -72,8 +64,10 @@ public abstract class ClassEntry : ICodeWeaver<ClassDeclarationSyntax, INamedTyp
         var baseInterfaces = GenerateBaseInterfaces();
         var inheritanceSymbol = (baseTypes.Length + baseInterfaces.Length) > 0 ? ":" : string.Empty;
 
+        currentClassDepth++;
+
         var currentModifiers = Syntax.Modifiers.ToString();
-        sourceBuilder.AppendIndentedLine(currentClassDepth, $"{currentModifiers}class {Syntax.Identifier.Text} {inheritanceSymbol} {string.Join(", ", baseTypes.Concat(baseInterfaces))}");
+        sourceBuilder.AppendIndentedLine(currentClassDepth, $"{currentModifiers} class {Syntax.Identifier.Text} {inheritanceSymbol} {string.Join(", ", baseTypes.Concat(baseInterfaces))}");
         sourceBuilder.AppendIndentedLine(currentClassDepth, "{");
 
         currentIndentLevel++;
@@ -94,7 +88,9 @@ public abstract class ClassEntry : ICodeWeaver<ClassDeclarationSyntax, INamedTyp
         currentIndentLevel--;
         sourceBuilder.AppendIndentedLine(currentClassDepth, "}");
 
-        if (OuterClasses != null && OuterClasses.Count > 0)
+        currentClassDepth--;
+
+        if (OuterClasses.Count > 0)
         {
             for (int i = 0; i < OuterClasses.Count; i++)
             {
@@ -105,7 +101,10 @@ public abstract class ClassEntry : ICodeWeaver<ClassDeclarationSyntax, INamedTyp
 
         return sourceBuilder.ToString();
     }
-
+    
+    public abstract string GetFileName();
+    public virtual bool CanWeave() => true;
+    public virtual Encoding GetEncoding() => Encoding.UTF8;
     protected abstract string[] GenerateBaseTypes();
     protected abstract string[] GenerateBaseInterfaces();
     protected abstract string GenerateBody(int depth);
